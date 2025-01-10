@@ -34,5 +34,5 @@ int main(){
 
     free(numbers);
 
-
+    return 0;
 }
