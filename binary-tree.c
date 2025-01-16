@@ -9,7 +9,6 @@ typedef struct Node {
 
 typedef struct{
     Node *root;
-    int level;
 } Tree;
 
 Tree* create_tree(){
@@ -20,7 +19,6 @@ Tree* create_tree(){
         return NULL;
     }
     tree->root = NULL;
-    tree->level = 0;
 
     return tree;
 }
@@ -112,18 +110,6 @@ void print_tree(Tree *tree){
     printf("_____________\n");
 }
 
-Node* get_edge_node(Node *current){
-    Node *temp;
-    temp = current->left;
-    while(temp->right != NULL){
-        current = temp;
-        temp = temp->right;
-    }
-
-    current->right = NULL;
-    return temp;
-}
-
 Node* remove_node(Node *current, int n) {
     if (current == NULL) return NULL;
     if (current->val == n) {
@@ -164,8 +150,13 @@ Node* remove_node(Node *current, int n) {
 
 void remove_tree(Tree *tree, int n){
     if(tree == NULL) return;
-    if(n < tree->root->val) tree->root = remove_node(tree->root->left, n);
-    else tree->root = remove_node(tree->root->right, n);
+    if(tree->root == NULL) return;
+    if(tree->root->right == NULL && tree->root->left == NULL){
+        free(tree->root);
+        tree->root = NULL;
+        return;
+    }
+    tree->root = remove_node(tree->root, n);
 }
 
 
@@ -175,7 +166,8 @@ int main() {
     Tree *tree = create_tree();
 
     while (1) {
-        printf("\033[H\033[J"); // Limpa toda a tela
+        printf("\033[H\033[J");
+        printf("Binary Tree: \n\n");
         print_tree(tree);
         printf("\nInsert a postive number to add it to the tree\n");
         printf("Insert a negative number to remove it from the tree\n\n::");
@@ -185,7 +177,7 @@ int main() {
         if(value >= 0){
             add_tree(tree, value);
         } else {
-            remove_node(tree->root, value * -1);
+            remove_tree(tree, value * -1);
         }
     }
 
