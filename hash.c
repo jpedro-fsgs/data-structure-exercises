@@ -75,7 +75,7 @@ int main() {
         printf("2. Obter elemento\n");
         printf("3. Sair\n");
         printf("Digite sua escolha: ");
-        scanf("%d", &choice);
+        scanf("::%d", &choice);
 
         if (choice == 1) {
             printf("Digite a chave: ");

@@ -159,6 +159,14 @@ void remove_tree(Tree *tree, int n){
     tree->root = remove_node(tree->root, n);
 }
 
+int get_height(Node *node){
+    if(node == NULL) return 0;
+    int left = get_height(node->left);
+    int right = get_height(node->right);
+
+    return (left > right ? left : right) + 1;
+
+}
 
 int main() {
 
@@ -169,6 +177,7 @@ int main() {
         printf("\033[H\033[J");
         printf("Binary Tree: \n\n");
         print_tree(tree);
+        printf("Height: %d\n", get_height(tree->root));
         printf("\nInsert a postive number to add it to the tree\n");
         printf("Insert a negative number to remove it from the tree\n\n::");
 
