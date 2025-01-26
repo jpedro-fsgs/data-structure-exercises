@@ -6,17 +6,17 @@ int main(){
     int n;
     scanf("%d", &n);
 
-    unsigned long long p[n];
+    long long int p[n];
     for (int i=0; i<n; i++) {
-        scanf("%lu", &p[i]);
+        scanf("%lld", &p[i]);
     }
 
     for(int i=0; i<n; i++){
-        unsigned long long sum=0;
-        for(unsigned long long j=p[i]; j>=1; j/=2){
+        long long int sum=0;
+        for(long long int j=p[i]; j>=1; j/=2){
             sum += j;
         }
-        printf("%lu\n", sum);
+        printf("%lld\n", sum);
     }
 
 }
