@@ -1,14 +1,5 @@
 #include<stdio.h>
 
-int maxDepth(int *employees, int index){
-    int depth = 1;
-    while(employees[index] != -1){
-        depth++;
-        index = employees[index] - 1;
-    }
-    return depth;
-}
-
 int main(){
     int n;
     scanf("%d", &n);
