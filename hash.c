@@ -10,14 +10,14 @@ typedef struct{
 
 
 typedef struct{
-    Data *table;
+    Data **table;
     int size;
     int capacity;
 } HashTable;
 
 HashTable* create_table(){
     HashTable *hashTable = malloc(sizeof(HashTable));
-    hashTable->table = malloc(sizeof(Data) * CAPACITY);
+    hashTable->table = malloc(sizeof(Data*) * CAPACITY);
     hashTable->capacity = CAPACITY;
     hashTable->size = 0;
 
@@ -28,77 +28,65 @@ unsigned long hash(char *value){
     unsigned long i = 0;
 
     for(int j=0; value[j]; j++){
-        i += value[j];
+        i = i * 31 + value[j];
     }
 
     return i % CAPACITY;
 }
 
-void add(HashTable *hashTable, char *newKey, int value){
-    if(value == 0) return;
+int add(HashTable *hashTable, char *newKey, int value){
+
+    if(hashTable->size == hashTable->capacity){
+        return -1;
+    }
     int pos = hash(newKey);
-    while(hashTable->table[pos].key != NULL){
-        if(hashTable->table[pos].key == newKey) return;
-        if(pos > hashTable->capacity) exit(1);
+    while(hashTable->table[pos]!= NULL){
         pos++;
     }
-    Data data;
-    data.key = newKey;
-    data.val = value;
+    Data *data = malloc(sizeof(Data));
+    if(data == NULL) return -1;
+    data->key = newKey;
+    data->val = value;
 
     hashTable->table[pos] = data;
+    hashTable->size++;
+    return 1;
+
 }
 
 int get(HashTable *hashTable, char *newkey){
     int pos = hash(newkey);
-    while(hashTable->table[pos].key != newkey){
-        if(hashTable->table[pos].key == NULL){
-            return -1;
-        }
+    while(hashTable->table[pos]->key != newkey){
+        pos++;
     }
 
-    return hashTable->table[pos].val;
+    return hashTable->table[pos]->val;
+}
+
+void free_hash_table(HashTable *table){
+    for(int i=0; i<CAPACITY; i++){
+        if(table->table[i] != NULL){
+            free(table->table[i]);
+        }
+    }
+    free(table);
 }
 
 
 int main() {
     HashTable *table = create_table();
-    char key[100];
-    int value;
-    int choice;
+    add(table, "teste", 45);
+    add(table, "teset", 46);
+    printf("teste: %d\n", get(table, "teste"));
+    printf("teset: %d\n", get(table, "teset"));
 
-    while (1) {
-        // printf("\033[H\033[J");
-        printf("_____________________\n");
-        printf("Escolha uma opção:\n");
-        printf("1. Adicionar elemento\n");
-        printf("2. Obter elemento\n");
-        printf("3. Sair\n");
-        printf("Digite sua escolha: ");
-        scanf("::%d", &choice);
-
-        if (choice == 1) {
-            printf("Digite a chave: ");
-            scanf("%s", key);
-            printf("Digite o valor: ");
-            scanf("%d", &value);
-            add(table, key, value);
-            printf("Elemento adicionado com sucesso!\n");
-        } else if (choice == 2) {
-            printf("Digite a chave: ");
-            scanf("%s", key);
-            int result = get(table, key);
-            if (result != -1) {
-                printf("Valor: %d\n", result);
-            } else {
-                printf("Chave não encontrada.\n");
-            }
-        } else if (choice == 3) {
-            break;
-        } else {
-            printf("Escolha inválida. Tente novamente.\n");
+    printf("___________\n");
+    for(int i=0; i<CAPACITY; i++){
+        if(table->table[i] != NULL){
+            printf("%p %s: %d\n",table->table[i], table->table[i]->key, table->table[i]->val);
         }
     }
 
+    free_hash_table(table);
     return 0;
 }
